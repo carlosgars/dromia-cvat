@@ -70,6 +70,7 @@ import { registerComponentShortcuts } from 'actions/shortcuts-actions';
 import { subKeyMap } from 'utils/component-subkeymap';
 import ImageSetupsContent from './image-setups-content';
 import CanvasTipsComponent from './canvas-hints';
+import DromiaGaitOverlay from './dromia-gait-overlay';
 
 const cvat = getCore();
 const MAX_DISTANCE_TO_OPEN_SHAPE = 50;
@@ -1157,6 +1158,8 @@ class CanvasWrapperComponent extends React.PureComponent<Props> {
             showTagsOnFrame,
             canvasIsReady,
             annotations,
+            frame,
+            jobInstance,
             activatedStateID,
             focusedObjectPadding,
             onSwitchAutomaticBordering,
@@ -1239,6 +1242,14 @@ class CanvasWrapperComponent extends React.PureComponent<Props> {
                         width: '100%',
                         height: '100%',
                     }}
+                />
+
+                <DromiaGaitOverlay
+                    canvasInstance={canvasInstance}
+                    annotations={annotations}
+                    frame={frame}
+                    startFrame={jobInstance.startFrame}
+                    stopFrame={jobInstance.stopFrame}
                 />
 
                 <Popover

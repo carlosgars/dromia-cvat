@@ -20,8 +20,10 @@ import { subKeyMap } from 'utils/component-subkeymap';
 import GlobalHotKeys, { KeyMap } from 'utils/mousetrap-react';
 import { finishDrawAvailable } from 'utils/drawing';
 import SaveAnnotationsButton from './save-annotations-button';
+import DromiaSyncButton from './dromia-sync-button';
 
 interface Props {
+    dromiaMode?: boolean;
     saving: boolean;
     undoAction?: string;
     redoAction?: string;
@@ -63,6 +65,7 @@ registerComponentShortcuts(componentShortcuts);
 
 function LeftGroup(props: Props): JSX.Element {
     const {
+        dromiaMode = false,
         saving,
         keyMap,
         undoAction,
@@ -119,8 +122,9 @@ function LeftGroup(props: Props): JSX.Element {
                 </Modal>
             )}
             <Col className='cvat-annotation-header-left-group'>
-                <AnnotationMenuComponent />
-                <SaveAnnotationsButton />
+                {!dromiaMode && <AnnotationMenuComponent />}
+                {!dromiaMode && <SaveAnnotationsButton />}
+                {dromiaMode && <DromiaSyncButton />}
                 <CVATTooltip overlay={`Undo: ${undoAction} ${undoShortcut}`}>
                     <Button
                         style={{ pointerEvents: undoAction ? 'initial' : 'none', opacity: undoAction ? 1 : 0.5 }}

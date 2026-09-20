@@ -5,6 +5,9 @@
 
 import React from 'react';
 import { Col, Row } from 'antd/lib/grid';
+import Button from 'antd/lib/button';
+import { LeftOutlined, ToolOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 import {
     ActiveControl, NavigationType, ToolsBlockerState, Workspace,
@@ -12,6 +15,7 @@ import {
 import { Job } from 'cvat-core-wrapper';
 import { KeyMap } from 'utils/mousetrap-react';
 import { Chapter } from 'cvat-core/src/frames';
+import { fullCvatRequested, isDromiaResource } from 'utils/dromia-mode';
 import LeftGroup from './left-group';
 import PlayerButtons from './player-buttons';
 import PlayerNavigation from './player-navigation';
@@ -147,6 +151,7 @@ export default function AnnotationTopBarComponent(props: Props): JSX.Element {
     } = props;
 
     const playerItems: [JSX.Element, number][] = [];
+    const dromiaMode = isDromiaResource(jobInstance) && !fullCvatRequested();
 
     playerItems.push([(
         <PlayerButtons
@@ -207,8 +212,17 @@ export default function AnnotationTopBarComponent(props: Props): JSX.Element {
     ), 10]);
 
     return (
-        <Row justify='space-between'>
+        <Row justify='space-between' className={dromiaMode ? 'cvat-dromia-review-top-bar' : ''}>
+            {dromiaMode && (
+                <Col className='cvat-dromia-review-identity'>
+                    <Link to={`/tasks/${jobInstance.taskId}`}>
+                        <LeftOutlined />
+                        <span>{jobInstance.taskName}</span>
+                    </Link>
+                </Col>
+            )}
             <LeftGroup
+                dromiaMode={dromiaMode}
                 saving={saving}
                 undoAction={undoAction}
                 redoAction={redoAction}
@@ -230,15 +244,27 @@ export default function AnnotationTopBarComponent(props: Props): JSX.Element {
                         .map((menuItem) => menuItem[0]) }
                 </Row>
             </Col>
-            <RightGroup
-                workspace={workspace}
-                jobInstance={jobInstance}
-                annotationFilters={annotationFilters}
-                initialOpenGuide={initialOpenGuide}
-                changeWorkspace={changeWorkspace}
-                showStatistics={showStatistics}
-                showFilters={showFilters}
-            />
+            {dromiaMode ? (
+                <Col className='cvat-dromia-review-full-cvat'>
+                    <Button
+                        type='text'
+                        icon={<ToolOutlined />}
+                        href={`${window.location.pathname}?fullCVAT=1`}
+                    >
+                        Full CVAT
+                    </Button>
+                </Col>
+            ) : (
+                <RightGroup
+                    workspace={workspace}
+                    jobInstance={jobInstance}
+                    annotationFilters={annotationFilters}
+                    initialOpenGuide={initialOpenGuide}
+                    changeWorkspace={changeWorkspace}
+                    showStatistics={showStatistics}
+                    showFilters={showFilters}
+                />
+            )}
         </Row>
     );
 }

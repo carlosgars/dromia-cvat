@@ -24,8 +24,10 @@ import CVATLoadingSpinner from 'components/common/loading-spinner';
 import MoveTaskModal from 'components/move-task-modal/move-task-modal';
 import { CombinedState } from 'reducers';
 import { updateTaskAsync, updateTaskMetadataAsync } from 'actions/tasks-actions';
+import { fullCvatRequested, isDromiaResource } from 'utils/dromia-mode';
 import TopBarComponent from './top-bar';
 import DetailsComponent from './details';
+import DromiaTaskView from './dromia-task-view';
 import { getCloudStorageById } from './cloud-storage-editor';
 
 const core = getCore();
@@ -93,6 +95,12 @@ function TaskPageComponent(): JSX.Element {
         }
     }, [deletes]);
 
+    const dromiaMode = isDromiaResource(taskInstance) && !fullCvatRequested();
+    useEffect(() => {
+        document.body.classList.toggle('cvat-dromia-review-mode', dromiaMode);
+        return () => document.body.classList.remove('cvat-dromia-review-mode');
+    }, [dromiaMode]);
+
     const isAudioTask = taskInstance && taskInstance.mediaType === MediaType.AUDIO;
     const labelsEditorProps = useMemo(() => (isAudioTask ? {
         enableSkeletonCreator: false,
@@ -106,6 +114,10 @@ function TaskPageComponent(): JSX.Element {
 
     if (!taskInstance) {
         return <TaskNotFoundComponent />;
+    }
+
+    if (dromiaMode) {
+        return <DromiaTaskView task={taskInstance} />;
     }
 
     const onUpdateTask = (task: Task, fields: Parameters<Task['save']>[0] = {}): Promise<Task> => {

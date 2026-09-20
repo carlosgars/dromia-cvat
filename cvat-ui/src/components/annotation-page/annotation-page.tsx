@@ -27,7 +27,9 @@ import { usePrevious } from 'utils/hooks';
 import EventRecorder from 'utils/event-recorder';
 import { readLatestFrame } from 'utils/remember-latest-frame';
 import { EventScope } from 'cvat-core/src/enums';
+import { fullCvatRequested, isDromiaResource } from 'utils/dromia-mode';
 import SearchFramesModal from './top-bar/search-modal';
+import { DromiaGaitProvider } from './dromia-gait-context';
 
 interface Props {
     job: Job | null | undefined;
@@ -48,6 +50,12 @@ export default function AnnotationPageComponent(props: Props): JSX.Element {
     } = props;
     const prevJob = usePrevious(job);
     const prevFetching = usePrevious(fetching);
+    const dromiaMode = isDromiaResource(job) && !fullCvatRequested();
+
+    useEffect(() => {
+        document.body.classList.toggle('cvat-dromia-review-mode', dromiaMode);
+        return () => document.body.classList.remove('cvat-dromia-review-mode');
+    }, [dromiaMode]);
 
     useEffect(() => {
         saveLogs();
@@ -149,21 +157,23 @@ export default function AnnotationPageComponent(props: Props): JSX.Element {
     }
 
     return (
-        <Layout className='cvat-annotation-page'>
-            <Layout.Header className='cvat-annotation-header'>
-                <AnnotationTopBarContainer />
-            </Layout.Header>
-            <Layout.Content className='cvat-annotation-layout-content'>
-                {workspace === Workspace.STANDARD3D && <StandardWorkspace3DComponent />}
-                {workspace === Workspace.STANDARD && <StandardWorkspaceComponent />}
-                {workspace === Workspace.SINGLE_SHAPE && <SingleShapeWorkspace />}
-                {workspace === Workspace.ATTRIBUTES && <AttributeAnnotationWorkspace />}
-                {workspace === Workspace.TAGS && <TagAnnotationWorkspace />}
-                {workspace === Workspace.REVIEW && <ReviewAnnotationsWorkspace />}
-            </Layout.Content>
-            <FiltersModalComponent />
-            <StatisticsModalComponent />
-            <SearchFramesModal />
-        </Layout>
+        <DromiaGaitProvider taskID={job.taskId} enabled={dromiaMode}>
+            <Layout className={`cvat-annotation-page ${dromiaMode ? 'cvat-dromia-annotation-page' : ''}`}>
+                <Layout.Header className='cvat-annotation-header'>
+                    <AnnotationTopBarContainer />
+                </Layout.Header>
+                <Layout.Content className='cvat-annotation-layout-content'>
+                    {workspace === Workspace.STANDARD3D && <StandardWorkspace3DComponent />}
+                    {workspace === Workspace.STANDARD && <StandardWorkspaceComponent dromiaMode={dromiaMode} />}
+                    {workspace === Workspace.SINGLE_SHAPE && <SingleShapeWorkspace />}
+                    {workspace === Workspace.ATTRIBUTES && <AttributeAnnotationWorkspace />}
+                    {workspace === Workspace.TAGS && <TagAnnotationWorkspace />}
+                    {workspace === Workspace.REVIEW && <ReviewAnnotationsWorkspace />}
+                </Layout.Content>
+                <FiltersModalComponent />
+                <StatisticsModalComponent />
+                <SearchFramesModal />
+            </Layout>
+        </DromiaGaitProvider>
     );
 }

@@ -23,6 +23,165 @@
     overflow: hidden;
 }
 
+body.cvat-dromia-review-mode {
+    > #root > .ant-layout > .cvat-header {
+        display: none;
+    }
+}
+
+.cvat-dromia-annotation-page {
+    .cvat-dromia-review-top-bar {
+        flex-wrap: nowrap;
+    }
+
+    .cvat-dromia-review-identity {
+        align-items: center;
+        display: flex;
+        min-width: 150px;
+        max-width: 220px;
+        padding: 0 12px;
+
+        a {
+            align-items: center;
+            color: $text-color;
+            display: flex;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        span:last-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    .cvat-dromia-review-full-cvat {
+        align-items: center;
+        display: flex;
+        padding-right: 8px;
+    }
+
+    .cvat-dromia-workflow-controls {
+        align-items: center;
+        display: flex;
+        flex: 0 0 auto;
+        height: 48px;
+        min-width: 0;
+        white-space: nowrap;
+    }
+
+    .ant-btn-link.cvat-dromia-sync-button {
+        width: 76px;
+    }
+
+    .ant-btn-link.cvat-dromia-generate-metrics-button {
+        width: 88px;
+    }
+
+    .ant-btn-link.cvat-dromia-video-button {
+        width: 42px;
+    }
+
+    .ant-btn-link.cvat-dromia-gait-button,
+    .ant-btn-link.cvat-dromia-gait-overlay-button {
+        width: 58px;
+    }
+
+    .ant-btn-link.cvat-dromia-export-button {
+        width: 64px;
+    }
+
+    .cvat-dromia-ground-truth-checkbox {
+        align-items: center;
+        display: inline-flex;
+        margin: 0 8px;
+        white-space: nowrap;
+    }
+
+    .cvat-dromia-stale-tag {
+        font-size: 9px;
+        line-height: 18px;
+        margin: 0 3px;
+        padding: 0 5px;
+    }
+
+    .cvat-player-filename-wrapper,
+    .cvat-player-frame-actions {
+        display: none;
+    }
+
+    .cvat-draw-rectangle-control,
+    .cvat-draw-polygon-control,
+    .cvat-draw-polyline-control,
+    .cvat-draw-points-control,
+    .cvat-draw-ellipse-control,
+    .cvat-draw-mask-control,
+    .cvat-draw-cuboid-control,
+    .cvat-draw-skeleton-control,
+    .cvat-setup-tag-control,
+    .cvat-merge-control,
+    .cvat-group-control,
+    .cvat-join-control,
+    .cvat-slice-control,
+    .cvat-split-track-control,
+    .cvat-issue-control,
+    .cvat-tools-control,
+    .cvat-extra-controls-control,
+    .cvat-opencv-control,
+    .cvat-snap-tools-control {
+        display: none;
+    }
+
+    @media (max-width: 1480px) {
+        .cvat-dromia-ground-truth-label {
+            display: none;
+        }
+
+        .cvat-dromia-ground-truth-checkbox {
+            margin: 0 5px;
+        }
+    }
+
+    // CVAT's transport controls need most of the header at laptop widths. Collapse
+    // DromIA actions before their labels are squeezed or ellipsized.
+    @media (max-width: 1400px) {
+        .ant-btn-link.cvat-dromia-sync-button,
+        .ant-btn-link.cvat-dromia-generate-metrics-button,
+        .ant-btn-link.cvat-dromia-gait-button,
+        .ant-btn-link.cvat-dromia-gait-overlay-button,
+        .ant-btn-link.cvat-dromia-export-button {
+            width: 46px;
+
+            > span:not([role='img']):not(.ant-btn-loading-icon) {
+                display: none;
+            }
+        }
+
+        .cvat-dromia-stale-tag {
+            display: none;
+        }
+    }
+
+    @media (max-width: 1100px) {
+        .cvat-dromia-review-identity {
+            min-width: 108px;
+            max-width: 108px;
+            padding: 0 6px;
+
+            a {
+                gap: 4px;
+            }
+        }
+
+        // Full CVAT is also available from the DromIA task page. Removing this
+        // duplicate escape link keeps all frame transport controls in view.
+        .cvat-dromia-review-full-cvat {
+            display: none;
+        }
+    }
+}
+
 .cvat-annotation-layout-content {
     height: 100%;
     overflow-y: clip;

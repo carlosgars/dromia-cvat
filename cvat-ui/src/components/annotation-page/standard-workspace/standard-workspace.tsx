@@ -18,17 +18,21 @@ import RemoveConfirmComponent from 'components/annotation-page/standard-workspac
 import PropagateConfirmComponent from 'components/annotation-page/standard-workspace/propagate-confirm';
 import BrushTools from 'components/annotation-page/canvas/views/canvas2d/brush-tools';
 
-export default function StandardWorkspaceComponent(): JSX.Element {
+interface Props {
+    dromiaMode?: boolean;
+}
+
+export default function StandardWorkspaceComponent({ dromiaMode = false }: Props): JSX.Element {
     return (
         <Layout hasSider className='cvat-standard-workspace'>
             <ControlsSideBarContainer />
             <CanvasLayout />
-            <BrushTools />
-            <ObjectSideBarComponent objectsList={<ObjectsListContainer />} />
-            <PropagateConfirmComponent />
+            {!dromiaMode && <BrushTools />}
+            {!dromiaMode && <ObjectSideBarComponent objectsList={<ObjectsListContainer />} />}
+            {!dromiaMode && <PropagateConfirmComponent />}
             <CanvasContextMenuContainer />
             <CanvasPointContextMenuComponent />
-            <IssueAggregatorComponent />
+            {!dromiaMode && <IssueAggregatorComponent />}
             <RemoveConfirmComponent />
         </Layout>
     );

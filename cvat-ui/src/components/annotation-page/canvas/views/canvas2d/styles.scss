@@ -8,6 +8,264 @@
     margin-bottom: $grid-unit-size * 3;
 }
 
+.cvat-dromia-gait-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 90;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.cvat-dromia-gait-geometry {
+    position: absolute;
+    transform-origin: center center;
+    overflow: visible;
+}
+
+.cvat-dromia-gait-hud {
+    position: absolute;
+    top: $grid-unit-size * 2;
+    left: $grid-unit-size * 2;
+    min-width: 370px;
+    padding: $grid-unit-size * 1.5;
+    color: white;
+    background: rgba(9, 15, 25, 82%);
+    border: 1px solid rgba(255, 255, 255, 18%);
+    border-radius: $border-radius-base;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 35%);
+    backdrop-filter: blur(4px);
+}
+
+.cvat-dromia-gait-status {
+    display: flex;
+    flex-direction: column;
+    min-width: 280px;
+    gap: 4px;
+
+    span {
+        color: rgba(255, 255, 255, 72%);
+        font-size: 12px;
+    }
+}
+
+.cvat-dromia-gait-hud-title,
+.cvat-dromia-gait-foot-row {
+    display: flex;
+    align-items: center;
+    gap: $grid-unit-size;
+}
+
+.cvat-dromia-gait-plot {
+    margin-top: $grid-unit-size;
+    padding-top: $grid-unit-size;
+    border-top: 1px solid rgba(255, 255, 255, 14%);
+
+    svg {
+        display: block;
+        width: 100%;
+        height: 62px;
+        overflow: visible;
+    }
+
+    path {
+        fill: none;
+        stroke-width: 1.8;
+        vector-effect: non-scaling-stroke;
+    }
+
+    path.left {
+        stroke: #ffc53d;
+    }
+
+    path.right {
+        stroke: #36cfc9;
+    }
+
+    line.grid {
+        stroke: rgba(255, 255, 255, 12%);
+        stroke-dasharray: 3 3;
+    }
+
+    line.cursor {
+        stroke: white;
+        stroke-width: 1;
+        filter: drop-shadow(0 0 2px black);
+    }
+
+    rect.left-contact {
+        fill: #ffc53d;
+    }
+
+    rect.right-contact {
+        fill: #36cfc9;
+    }
+}
+
+.cvat-dromia-gait-plot-title {
+    display: flex;
+    justify-content: space-between;
+    color: rgba(255, 255, 255, 58%);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+
+    i {
+        display: inline-block;
+        width: 10px;
+        height: 2px;
+        margin: 0 4px 2px 8px;
+    }
+
+    i.left {
+        background: #ffc53d;
+    }
+
+    i.right {
+        background: #36cfc9;
+    }
+}
+
+.cvat-dromia-gait-hud-title {
+    justify-content: space-between;
+    margin-bottom: $grid-unit-size;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.cvat-dromia-gait-foot-row {
+    padding: 5px 0;
+    font-size: 12px;
+
+    strong {
+        width: 42px;
+    }
+
+    span {
+        color: rgba(255, 255, 255, 72%);
+    }
+
+    span.contact {
+        color: #73d13d;
+        font-weight: 700;
+    }
+}
+
+.cvat-dromia-gait-foot-row-left strong {
+    color: #ffc53d;
+}
+
+.cvat-dromia-gait-foot-row-right strong {
+    color: #36cfc9;
+}
+
+.cvat-dromia-gait-current-event {
+    margin-top: $grid-unit-size;
+    padding: 5px 8px;
+    color: #fff1b8;
+    background: rgba(250, 173, 20, 25%);
+    border-left: 3px solid #faad14;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.cvat-dromia-gait-event-rail {
+    position: absolute;
+    right: $grid-unit-size * 3;
+    bottom: $grid-unit-size * 2;
+    left: $grid-unit-size * 3;
+    height: 8px;
+    background: rgba(255, 255, 255, 28%);
+    border-radius: 4px;
+    pointer-events: all;
+}
+
+.cvat-dromia-gait-event-legend {
+    position: absolute;
+    right: 0;
+    bottom: 14px;
+    display: flex;
+    gap: 8px;
+    padding: 3px 6px;
+    color: rgba(255, 255, 255, 78%);
+    background: rgba(9, 15, 25, 72%);
+    border-radius: 3px;
+    font-size: 9px;
+
+    span::before {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        margin-right: 3px;
+        border-radius: 2px;
+        content: '';
+    }
+
+    span.landing::before {
+        background: #52c41a;
+    }
+
+    span.takeoff::before {
+        background: #fa8c16;
+    }
+
+    span.alignment::before {
+        background: #9254de;
+        border-radius: 50%;
+    }
+}
+
+.cvat-dromia-gait-event-marker {
+    position: absolute;
+    top: -5px;
+    width: 10px;
+    height: 18px;
+    padding: 0;
+    border: 2px solid #111927;
+    border-radius: 3px;
+    transform: translateX(-50%);
+    cursor: pointer;
+
+    &.landing {
+        background: #52c41a;
+    }
+
+    &.takeoff {
+        background: #fa8c16;
+    }
+
+    &.alignment {
+        background: #9254de;
+        border-radius: 50%;
+    }
+
+    &:hover,
+    &:focus-visible {
+        width: 14px;
+        outline: 2px solid white;
+    }
+}
+
+.cvat-dromia-gait-frame-cursor {
+    position: absolute;
+    top: -8px;
+    width: 2px;
+    height: 24px;
+    background: white;
+    box-shadow: 0 0 4px black;
+    transform: translateX(-50%);
+}
+
+@media (width <= 900px) {
+    .cvat-dromia-gait-hud {
+        min-width: 320px;
+        max-width: calc(100% - #{$grid-unit-size * 4});
+    }
+
+    .cvat-dromia-gait-foot-row {
+        flex-wrap: wrap;
+    }
+}
+
 .cvat-canvas-hints-container {
     filter: none;
     position: absolute;

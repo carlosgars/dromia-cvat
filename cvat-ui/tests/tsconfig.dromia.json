@@ -1,0 +1,4 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["../index.d.ts", "../src/assets/index.d.ts", "dromia-gait-contract.ts"]
+}
