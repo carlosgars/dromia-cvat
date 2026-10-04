@@ -23,14 +23,13 @@ import Title from 'antd/lib/typography/Title';
 
 import { changeFrameAsync } from 'actions/annotation-actions';
 import { CombinedState } from 'reducers';
-import { dromiaTaskAPI } from 'utils/dromia-api';
+import { dromiaTaskAPI } from './api';
 import {
     FlightInterval,
     GaitEvent,
     GaitFrame,
     useDromiaGait,
-} from '../dromia-gait-context';
-
+} from './provider';
 
 interface Props {
     taskID: number;
@@ -213,6 +212,7 @@ export default function DromiaGaitDrawer(props: Props): JSX.Element {
         loading,
         error,
         refresh,
+        frameIndex,
     } = useDromiaGait();
 
     const runnerIDs = useMemo(
@@ -220,7 +220,9 @@ export default function DromiaGaitDrawer(props: Props): JSX.Element {
         [analysis],
     );
     const runner = selectedRunnerID === null ? undefined : analysis?.runners[String(selectedRunnerID)];
-    const currentFrame = runner?.frames.find((frame) => frame.frame_idx === frameNumber);
+    const currentFrame = selectedRunnerID === null ? undefined : (
+        frameIndex.get(selectedRunnerID)?.get(frameNumber)
+    );
 
     const selectFrame = useCallback((frame: number): void => {
         dispatch(changeFrameAsync(frame));

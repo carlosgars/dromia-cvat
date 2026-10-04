@@ -20,7 +20,7 @@ import { subKeyMap } from 'utils/component-subkeymap';
 import GlobalHotKeys, { KeyMap } from 'utils/mousetrap-react';
 import { finishDrawAvailable } from 'utils/drawing';
 import SaveAnnotationsButton from './save-annotations-button';
-import DromiaSyncButton from './dromia-sync-button';
+import DromiaSyncButton from 'components/dromia/workflow-controls';
 
 interface Props {
     dromiaMode?: boolean;

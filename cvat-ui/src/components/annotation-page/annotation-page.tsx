@@ -27,9 +27,9 @@ import { usePrevious } from 'utils/hooks';
 import EventRecorder from 'utils/event-recorder';
 import { readLatestFrame } from 'utils/remember-latest-frame';
 import { EventScope } from 'cvat-core/src/enums';
-import { fullCvatRequested, isDromiaResource } from 'utils/dromia-mode';
+import { fullCvatRequested, isDromiaResource } from 'components/dromia/mode';
 import SearchFramesModal from './top-bar/search-modal';
-import { DromiaGaitProvider } from './dromia-gait-context';
+import { DromiaGaitProvider } from 'components/dromia/provider';
 
 interface Props {
     job: Job | null | undefined;

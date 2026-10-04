@@ -26,9 +26,9 @@ import {
     updateAnnotationsAsync,
 } from 'actions/annotation-actions';
 import CVATTooltip from 'components/common/cvat-tooltip';
-import { dromiaTaskAPI } from 'utils/dromia-api';
-import DromiaGaitDrawer from './dromia-gait-drawer';
-import { useDromiaGait } from '../dromia-gait-context';
+import { dromiaJSON, dromiaTaskAPI } from './api';
+import DromiaGaitDrawer from './metrics-drawer';
+import { useDromiaGait } from './provider';
 
 const DROMIA_LABEL = 'runner_lower_body';
 const FRAME_GROUND_TRUTH_ATTRIBUTE = 'frame_ground_truth';
@@ -68,7 +68,11 @@ function DromiaSyncButton(): JSX.Element {
 
     const groundTruthStates = useMemo((): GroundTruthState[] => objectStates.reduce(
         (accumulator: GroundTruthState[], state: ObjectState): GroundTruthState[] => {
-            if (state.label.name !== DROMIA_LABEL || state.shapeType !== ShapeType.SKELETON || state.parentID !== null) {
+            if (
+                state.label.name !== DROMIA_LABEL ||
+                state.shapeType !== ShapeType.SKELETON ||
+                state.parentID !== null
+            ) {
                 return accumulator;
             }
             const attribute = (jobAttributes[state.label.id as number] || [])
@@ -110,11 +114,7 @@ function DromiaSyncButton(): JSX.Element {
         setSyncing(true);
         try {
             await dispatch(saveAnnotationsAsync());
-            const response = await fetch(dromiaTaskAPI(job.taskId).poseUpdate, { method: 'POST' });
-            const payload = await response.json();
-            if (!response.ok) {
-                throw new Error(payload.error || 'DromIA pose update failed');
-            }
+            await dromiaJSON(dromiaTaskAPI(job.taskId).poseUpdate, { method: 'POST' });
             await dispatch(fetchAnnotationsAsync());
             await refreshWorkflow();
             message.success('Reviewed pose updated');
@@ -128,9 +128,7 @@ function DromiaSyncButton(): JSX.Element {
     const onGenerateMetrics = async (): Promise<void> => {
         setGeneratingMetrics(true);
         try {
-            const response = await fetch(dromiaTaskAPI(job.taskId).metricsGenerate, { method: 'POST' });
-            const payload = await response.json();
-            if (!response.ok) throw new Error(payload.error || 'Metric generation failed');
+            await dromiaJSON(dromiaTaskAPI(job.taskId).metricsGenerate, { method: 'POST' });
             await refreshWorkflow();
             await refreshGait();
             message.success('Biomechanical metrics generated');

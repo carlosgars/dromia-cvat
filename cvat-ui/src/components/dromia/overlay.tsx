@@ -11,7 +11,7 @@ import { Canvas } from 'cvat-canvas-wrapper';
 import { ObjectState, ShapeType } from 'cvat-core-wrapper';
 import {
     GaitFrame, GaitRunner, useDromiaGait,
-} from 'components/annotation-page/dromia-gait-context';
+} from './provider';
 
 const DROMIA_LABEL = 'runner_lower_body';
 const LEFT_COLOR = '#ffc53d';
@@ -57,12 +57,13 @@ function postureColor(posture: string | undefined): string {
 
 function jointMapForSkeleton(skeleton: ObjectState | undefined): JointMap {
     if (!skeleton) return {};
-    return skeleton.elements.reduce((joints: JointMap, element: ObjectState): JointMap => {
+    const joints: JointMap = {};
+    skeleton.elements.forEach((element: ObjectState) => {
         if (!element.outside && element.points?.length === 2) {
-            return { ...joints, [element.label.name]: { x: element.points[0], y: element.points[1] } };
+            joints[element.label.name] = { x: element.points[0], y: element.points[1] };
         }
-        return joints;
-    }, {});
+    });
+    return joints;
 }
 
 function Limb({ from, to, color }: { from?: Point; to?: Point; color: string }): JSX.Element | null {
@@ -196,6 +197,14 @@ function GaitMetricPlot({
 }): JSX.Element {
     const frameSpan = Math.max(lastFrame - firstFrame, 1);
     const cursorX = ((frame - firstFrame) / frameSpan) * 330;
+    const leftPath = useMemo(
+        () => metricPath(runner.frames, 'left_knee_angle_deg', firstFrame, frameSpan),
+        [runner.frames, firstFrame, frameSpan],
+    );
+    const rightPath = useMemo(
+        () => metricPath(runner.frames, 'right_knee_angle_deg', firstFrame, frameSpan),
+        [runner.frames, firstFrame, frameSpan],
+    );
     return (
         <div className='cvat-dromia-gait-plot'>
             <div className='cvat-dromia-gait-plot-title'>
@@ -204,8 +213,8 @@ function GaitMetricPlot({
             </div>
             <svg viewBox='0 0 330 62' role='img' aria-label='Knee angle through the clip'>
                 <line x1={0} y1={29} x2={330} y2={29} className='grid' />
-                <path d={metricPath(runner.frames, 'left_knee_angle_deg', firstFrame, frameSpan)} className='left' />
-                <path d={metricPath(runner.frames, 'right_knee_angle_deg', firstFrame, frameSpan)} className='right' />
+                <path d={leftPath} className='left' />
+                <path d={rightPath} className='right' />
                 {runner.frames.map((item) => {
                     const x = ((item.frame_idx - firstFrame) / frameSpan) * 330;
                     return (
@@ -231,7 +240,7 @@ export default function DromiaGaitOverlay(props: Props): JSX.Element | null {
     } = props;
     const dispatch = useDispatch();
     const {
-        analysis, error, loading, overlayEnabled, selectedRunnerID,
+        analysis, error, loading, overlayEnabled, selectedRunnerID, frameIndex,
     } = useDromiaGait();
     const [, updateGeometry] = useReducer((version: number) => version + 1, 0);
 
@@ -248,7 +257,7 @@ export default function DromiaGaitOverlay(props: Props): JSX.Element | null {
     }, [canvasInstance]);
 
     const runner = selectedRunnerID === null ? null : analysis?.runners[String(selectedRunnerID)] ?? null;
-    const metrics = runner?.frames.find((candidate) => candidate.frame_idx === frame);
+    const metrics = selectedRunnerID === null ? undefined : frameIndex.get(selectedRunnerID)?.get(frame);
     const { geometry } = canvasInstance;
 
     const skeleton = useMemo(() => {

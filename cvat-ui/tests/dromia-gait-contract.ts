@@ -1,7 +1,7 @@
 // Copyright (C) CVAT.ai Corporation
 // SPDX-License-Identifier: MIT
-import type { GaitEvent, GaitFrame, FlightInterval } from '../src/components/annotation-page/dromia-gait-context';
-import { DROMIA_API_BASE, dromiaTaskAPI } from '../src/utils/dromia-api';
+import type { GaitEvent, GaitFrame, FlightInterval } from '../src/components/dromia/provider';
+import { DROMIA_API_BASE, dromiaTaskAPI } from '../src/components/dromia/api';
 
 type AssertNever<T extends never> = T;
 export type RemovedEventFields = AssertNever<Extract<keyof GaitEvent,

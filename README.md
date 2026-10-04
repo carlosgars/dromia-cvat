@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> This is the pinned [DromIA](https://github.com/carlosgars/dromia) companion fork of CVAT.
+> It provides DromIA's local pose-review and gait-analysis interface while preserving the
+> upstream CVAT application and license. General CVAT documentation follows below.
+
 [![CVAT Community header](site/content/en/images/cvat_github_header.webp)](https://app.cvat.ai)
 # CVAT: Computer Vision Annotation Tool
 

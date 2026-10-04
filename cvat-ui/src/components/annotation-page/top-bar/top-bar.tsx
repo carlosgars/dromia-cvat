@@ -15,7 +15,7 @@ import {
 import { Job } from 'cvat-core-wrapper';
 import { KeyMap } from 'utils/mousetrap-react';
 import { Chapter } from 'cvat-core/src/frames';
-import { fullCvatRequested, isDromiaResource } from 'utils/dromia-mode';
+import { fullCvatRequested, isDromiaResource } from 'components/dromia/mode';
 import LeftGroup from './left-group';
 import PlayerButtons from './player-buttons';
 import PlayerNavigation from './player-navigation';

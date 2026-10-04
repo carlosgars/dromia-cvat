@@ -54,6 +54,7 @@ interface StateToProps {
     shortcutsModalVisible: boolean;
     changePasswordDialogShown: boolean;
     logoutFetching: boolean;
+    isAnalyticsPluginActive: boolean;
     organizationFetching: boolean;
     currentOrganization: any | null;
     organizationsList: Organization[];
@@ -94,6 +95,7 @@ function mapStateToProps(state: CombinedState): StateToProps {
             fetching: logoutFetching,
             showChangePasswordDialog: changePasswordDialogShown,
         },
+        plugins: { list },
         about,
         shortcuts: { normalizedKeyMap, keyMap, visibleShortcutsHelp: shortcutsModalVisible },
         settings: { showDialog: settingsModalVisible },
@@ -118,6 +120,7 @@ function mapStateToProps(state: CombinedState): StateToProps {
         shortcutsModalVisible,
         changePasswordDialogShown,
         logoutFetching,
+        isAnalyticsPluginActive: list.ANALYTICS,
         organizationFetching,
         currentOrganization,
         organizationsList,
@@ -158,6 +161,7 @@ function HeaderComponent(props: Props): JSX.Element {
         settingsModalVisible,
         shortcutsModalVisible,
         switchSettingsShortcut,
+        isAnalyticsPluginActive,
         organizationFetching,
         currentOrganization,
         organizationsList,
@@ -436,6 +440,55 @@ function HeaderComponent(props: Props): JSX.Element {
                 >
                     Jobs
                 </Button>
+                <Button
+                    className={getButtonClassName('cloudstorages')}
+                    type='link'
+                    value='cloudstorages'
+                    href='/cloudstorages?page=1'
+                    onClick={(event: React.MouseEvent): void => {
+                        event.preventDefault();
+                        history.push('/cloudstorages');
+                    }}
+                >
+                    Cloud Storages
+                </Button>
+                <Button
+                    className={getButtonClassName('requests')}
+                    type='link'
+                    value='requests'
+                    href='/requests?page=1'
+                    onClick={(event: React.MouseEvent): void => {
+                        event.preventDefault();
+                        history.push('/requests');
+                    }}
+                >
+                    Requests
+                </Button>
+                <Button
+                    className={getButtonClassName('models')}
+                    type='link'
+                    value='models'
+                    href='/models'
+                    onClick={(event: React.MouseEvent): void => {
+                        event.preventDefault();
+                        history.push('/models');
+                    }}
+                >
+                    Models
+                </Button>
+                {isAnalyticsPluginActive && user.hasAnalyticsAccess ? (
+                    <Button
+                        className={getButtonClassName('analytics', false)}
+                        type='link'
+                        href='/analytics'
+                        onClick={(event: React.MouseEvent): void => {
+                            event.preventDefault();
+                            window.open('/analytics', '_blank');
+                        }}
+                    >
+                        Analytics
+                    </Button>
+                ) : null}
             </div>
             <div className='cvat-right-header'>
                 <CVATTooltip overlay='Click to open repository'>

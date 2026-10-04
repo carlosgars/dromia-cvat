@@ -24,10 +24,10 @@ import CVATLoadingSpinner from 'components/common/loading-spinner';
 import MoveTaskModal from 'components/move-task-modal/move-task-modal';
 import { CombinedState } from 'reducers';
 import { updateTaskAsync, updateTaskMetadataAsync } from 'actions/tasks-actions';
-import { fullCvatRequested, isDromiaResource } from 'utils/dromia-mode';
+import { fullCvatRequested, isDromiaResource } from 'components/dromia/mode';
 import TopBarComponent from './top-bar';
 import DetailsComponent from './details';
-import DromiaTaskView from './dromia-task-view';
+import DromiaTaskView from 'components/dromia/task-view';
 import { getCloudStorageById } from './cloud-storage-editor';
 
 const core = getCore();
